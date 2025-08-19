@@ -26,5 +26,7 @@ jobs:
             cd ~/my-python-app || mkdir ~/my-python-app && cd ~/my-python-app  
             git clone https://github.com/${{ github.repository }} . || git pull
             pip3 install -r requirements.txt
+            pkill -f "python3 app.py" || true
+            nohup python3 app.py > app.log 2>&1 &
           EOF
           
