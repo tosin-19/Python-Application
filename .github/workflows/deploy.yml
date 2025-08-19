@@ -20,7 +20,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             sudo apt-get update -y
             sudo apt-get install -y python3 python3-pip          
             cd ~/my-python-app || mkdir ~/my-python-app && cd ~/my-python-app  
