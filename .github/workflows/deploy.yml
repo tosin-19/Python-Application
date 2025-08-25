@@ -46,6 +46,7 @@ jobs:
             else
               git pull
             fi
+            cd ~/Python-Application
 
             pip3 install -r requirements.txt
             pkill -f "python3 app.py" || true
