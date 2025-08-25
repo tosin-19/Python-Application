@@ -26,10 +26,10 @@ jobs:
             cd ~/my-python-app || mkdir ~/my-python-app && cd ~/my-python-app  
             git clone https://github.com/${{ github.repository }}
             pip3 install -r requirements.txt
-            pkill -f "gunicorn" || true
-            nohup gunicorn -b 0.0.0.0:5000 app:app > app.log 2>&1 &
-    
-        
+            pkill -f "python3 app.py" || true
+            nohup python3 app.py > app.log 2>&1 &
+
+         
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
@@ -48,8 +48,8 @@ jobs:
             fi
 
             pip3 install -r requirements.txt
-            pkill -f "gunicorn" || true
-            nohup gunicorn -b 0.0.0.0:80 app:app > app.log 2>&1 &
-          EOF
+            pkill -f "python3 app.py" || true
+            nohup python3 app.py > app.log 2>&1 &
+          EOF
 
           
