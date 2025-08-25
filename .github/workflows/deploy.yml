@@ -19,19 +19,26 @@ jobs:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
       - name: Deploy to EC2
-        run: | 
-              ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-              sudo apt-get update -y
-              sudo apt-get install -y python3 python3-pip
-              rm -rf ~/Python-Application
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            sudo apt-get update -y
+            sudo apt-get install -y python3 python3-pip python3-venv git
+            
+            mkdir -p ~/Python-Application
+            cd ~/Python-Application
 
-              git clone https://github.com/${{ github.repository }} ~/Python-Application
+            if [ ! -d .git ]; then
+              git clone https://github.com/${{ github.repository }} .
+            else
+              git pull
+            fi
 
-              cd ~/Python-Application
+            python3 -m venv venv
+            source venv/bin/activate
+  
+            pip install --upgrade pip
+            pip install -r requirements.txt
 
-              pip3 install -r requirements.txt
-
-              pkill -f "python3 app.py" || true
-
-              nohup python3 app.py > app.log 2>&1 &
-              EOF
+            pkill -f "python app.py" || true
+            nohup venv/bin/python app.py > app.log 2>&1 &
+          EOF
